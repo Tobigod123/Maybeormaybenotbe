@@ -1,0 +1,13 @@
+aiohttp
+python-decouple
+pyaesni
+psutil
+speedtest-cli
+git+https://github.com/1Danish-00/Telethon/archive/master.zip
+html_telegraph_poster
+ffmpeg-python
+opencv-python
+moviepy
+pydub
+pyvizio
+python-telegram-bot
