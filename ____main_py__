@@ -1,0 +1,139 @@
+
+# Import necessary modules
+import shutil
+import psutil
+import itertools
+import asyncio
+import time
+import re
+from datetime import datetime as dt
+from pathlib import Path
+from pyrogram import Client, events
+from pyrogram.types import InlineKeyboardButton as Button
+from . import *
+from .devtools import *
+
+LOGS.info("Starting...")
+
+
+######## Connect ########
+
+
+try:
+    bot.start(bot_token=BOT_TOKEN)
+except Exception as er:
+    LOGS.info(er)
+
+
+####### GENERAL CMDS ########
+
+
+@bot.on(events.NewMessage(pattern="/start"))
+async def _(e):
+    await start(e)
+
+
+@bot.on(events.NewMessage(pattern="/ping"))
+async def _(e):
+    await up(e)
+
+
+@bot.on(events.NewMessage(pattern="/help"))
+async def _(e):
+    await help(e)
+
+
+@bot.on(events.NewMessage(pattern="/link"))
+async def _(e):
+    await dl_link(e)
+
+
+######## Callbacks #########
+
+
+@bot.on(events.callbackquery.CallbackQuery(data=re.compile(b"stats(.*)")))
+async def _(e):
+    await stats(e)
+
+
+@bot.on(events.callbackquery.CallbackQuery(data=re.compile(b"skip(.*)")))
+async def _(e):
+    await skip(e)
+
+
+@bot.on(events.callbackquery.CallbackQuery(data=re.compile("ihelp")))
+async def _(e):
+    await ihelp(e)
+
+
+@bot.on(events.callbackquery.CallbackQuery(data=re.compile("beck")))
+async def _(e):
+    await beck(e)
+
+
+########## Direct ###########
+
+
+@bot.on(events.NewMessage(pattern="/eval"))
+async def _(e):
+    await eval(e)
+
+
+@bot.on(events.NewMessage(pattern="/bash"))
+async def _(e):
+    await bash(e)
+
+
+@bot.on(events.NewMessage(pattern="/usage"))
+async def _(e):
+    if str(e.sender_id) not in OWNER:
+        if e.sender_id != DEV:
+            return
+    total, used, free = shutil.disk_usage(".")
+    cpuUsage = psutil.cpu_percent()
+    memory = psutil.virtual_memory().percent
+    disk = psutil.disk_usage("/").percent
+    upload = hbs(psutil.net_io_counters().bytes_sent)
+    down = hbs(psutil.net_io_counters().bytes_recv)
+    TOTAL = hbs(total)
+    USED = hbs(used)
+    FREE = hbs(free)
+    await e.reply(
+        "**TOTAL DISK SPACE**: `{}`\n**USED**: `{}`\n**FREE**: {}\n**UPLOAD**: `{}`\n**DOWNLOAD**: `{}`\n**CPU**: `{}%`\n**RAM**: `{}%`\n**DISK**: `{}%`".format(
+            TOTAL,
+            USED,
+            FREE,
+            upload,
+            down,
+            cpuUsage,
+            memory,
+            disk,
+        )
+    )
+
+
+########## AUTO ###########
+
+
+async def process_queue():
+    while True:
+        try:
+            if not WORKING and QUEUE:
+                user = int(OWNER.split()[0])
+                e = await bot.send_message(user, "`Downloading Queue Files...`")
+                s = dt.now()
+                try:
+                    if isinstance(QUEUE[list(QUEUE.keys())[0]], str):
+                        dl = await fast_download(
+                            e, list(QUEUE.keys())[0], QUEUE[list(QUEUE.keys())[0]]
+                        )
+                    else:
+                        dl, file = QUEUE[list(QUEUE.keys())[0]]
+                        tt = time.time()
+                        dl = "downloads/" + dl
+                        with open(dl, "wb") as f:
+                            ok = await download_file(
+                                client=bot,
+                                location=file,
+                                out=f,
+                                progress_callback=lambda d, t: asyncio.get_event_loop().create_task
