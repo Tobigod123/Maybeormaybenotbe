@@ -1,0 +1,57 @@
+
+{
+  "name": "CompressorQueue",
+  "description": "A media compression bot",
+  "repository": "https://github.com/Tobigod123/Maybeormaybenotbe",
+  "keywords": ["bot", "compression", "media"],
+  "env": {
+    "PYTHONUNBUFFERED": "1",
+    "TZ": "UTC"
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "stack": "container",
+  "scripts": {
+    "start": "python -m your_main_file"
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "config": {
+    "API_ID": {
+      "required": true,
+      "description": "Your API ID from Telegram"
+    },
+    "API_HASH": {
+      "required": true,
+      "description": "Your API Hash from Telegram"
+    },
+    "BOT_TOKEN": {
+      "required": true,
+      "description": "Your bot token from BotFather"
+    },
+    "OWNER_ID": {
+      "required": true,
+      "description": "Your Telegram user ID"
+    },
+    "DATABASE_URL": {
+      "required": true,
+      "description": "Your Heroku PostgreSQL database URL"
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  }
+}
