@@ -1,0 +1,27 @@
+
+build:
+  docker:
+    worker: Dockerfile
+    web: Dockerfile.web
+    services:
+      - postgres
+      - redis
+
+run:
+  worker: bash run.sh
+  web: gunicorn myapp.wsgi --bind 0.0.0.0:$PORT
+
+release:
+  image:
+    web: worker
+  command:
+    - python compress.py --input videos/input.mp4 --output compressed/output.mp4 --quality high
+  attach:
+    resource:
+      - type: dyno
+        name: worker
+        quantity: 1
+    app:
+      - type: dyno
+        name: web
+        quantity: 1
