@@ -27,7 +27,7 @@ output_file = 'output.mp4'
 
 ffmpeg.input(input_file).output(output_file, crf=23).run()
 
-
+In this example, we use the ffmpeg library to compress a video. The crf parameter specifies the Constant Rate Factor, which controls the trade-off between file size and quality. You can experiment with different values to find the desired compression level.
 
 ```bash
 $ 
