@@ -6,7 +6,35 @@
   "keywords": ["bot", "compression", "media"],
   "env": {
     "PYTHONUNBUFFERED": "1",
-    "TZ": "UTC"
+    "TZ": "UTC",
+    "APP_ID": {
+      "required": true,
+      "description": "Your APP ID from Telegram"
+    },
+    "API_HASH": {
+      "required": true,
+      "description": "Your API Hash from Telegram"
+    },
+    "BOT_TOKEN": {
+      "required": true,
+      "description": "Your bot token from BotFather"
+    },
+    "DEV": {
+      "required": true,
+      "description": "Your developer ID"
+    },
+    "OWNER": {
+      "required": true,
+      "description": "Your owner ID"
+    },
+    "FFMPEG_CODE": {
+      "required": true,
+      "description": "FFmpeg code for media compression"
+    },
+    "THUMBNAIL": {
+      "required": true,
+      "description": "Path to the thumbnail file"
+    }
   },
   "buildpacks": [
     {
@@ -25,33 +53,5 @@
   },
   "addons": [
     "heroku-postgresql"
-  ],
-  "config": {
-    "API_ID": {
-      "required": true,
-      "description": "Your API ID from Telegram"
-    },
-    "API_HASH": {
-      "required": true,
-      "description": "Your API Hash from Telegram"
-    },
-    "BOT_TOKEN": {
-      "required": true,
-      "description": "Your bot token from BotFather"
-    },
-    "OWNER_ID": {
-      "required": true,
-      "description": "Your Telegram user ID"
-    },
-    "DATABASE_URL": {
-      "required": true,
-      "description": "Your Heroku PostgreSQL database URL"
-    }
-  },
-  "formation": {
-    "worker": {
-      "quantity": 1,
-      "size": "free"
-    }
-  }
+  ]
 }
