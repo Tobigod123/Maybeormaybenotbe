@@ -19,6 +19,16 @@ Videos often have large file sizes, which can be problematic for various reasons
 
 List the necessary dependencies and provide instructions on how to install them. Include any specific requirements, such as software versions or system configurations.
 
+
+import ffmpeg
+
+input_file = 'input.mp4'
+output_file = 'output.mp4'
+
+ffmpeg.input(input_file).output(output_file, crf=23).run()
+
+
+
 ```bash
 $ 
 
