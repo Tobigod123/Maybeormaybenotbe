@@ -20,25 +20,24 @@ Videos often have large file sizes, which can be problematic for various reasons
 List the necessary dependencies and provide instructions on how to install them. Include any specific requirements, such as software versions or system configurations.
 
 
-##import ffmpeg
+## import ffmpeg
 
 input_file = 'input.mp4'
 output_file = 'output.mp4'
 
-##ffmpeg.input(input_file).output(output_file, crf=23).run()
+##  ffmpeg.input(input_file).output(output_file, crf=23).run()
 
 In this example, we use the ffmpeg library to compress a video. The crf parameter specifies the Constant Rate Factor, which controls the trade-off between file size and quality. You can experiment with different values to find the desired compression level.
 
 
 
-##Contributing
+## Contributing
 Explain how others can contribute to your project. Provide guidelines for submitting bug reports, feature requests, or pull requests. Specify any coding standards, testing procedures, or documentation conventions that contributors should follow.
 
-##License
-Specify the license under which your project is distributed. For example:
+## License
 
 This project is licensed under the MIT License.
 
-##arduino
+## arduino
 
 Feel free to modify and customize this
