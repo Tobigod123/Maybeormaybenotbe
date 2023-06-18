@@ -1,4 +1,3 @@
-
 import os
 import subprocess
 import math
@@ -27,40 +26,19 @@ if not os.path.isdir("encode/"):
 if not os.path.isdir("thumb/"):
     os.mkdir("thumb/")
 
-
 def stdr(seconds: int) -> str:
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
-    if len(str(minutes)) == 1:
-        minutes = "0" + str(minutes)
-    if len(str(hours)) == 1:
-        hours = "0" + str(hours)
-    if len(str(seconds)) == 1:
-        seconds = "0" + str(seconds)
-    dur = (
-        ((str(hours) + ":") if hours else "00:")
-        + ((str(minutes) + ":") if minutes else "00:")
-        + ((str(seconds)) if seconds else "")
-    )
-    return dur
-
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
 
 def ts(milliseconds: int) -> str:
     seconds, milliseconds = divmod(int(milliseconds), 1000)
     minutes, seconds = divmod(seconds, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
-    tmp = (
-        ((str(days) + "d, ") if days else "")
-        + ((str(hours) + "h, ") if hours else "")
-        + ((str(minutes) + "m, ") if minutes else "")
-        + ((str(seconds) + "s, ") if seconds else "")
-        + ((str(milliseconds) + "ms, ") if milliseconds else "")
-    )
-    return tmp[:-2]
+    return f"{days}d, {hours}h, {minutes}m, {seconds}s, {milliseconds}ms"
 
-
-def hbs(size):
+def hbs(size: int) -> str:
     if not size:
         return ""
     power = 2 ** 10
@@ -69,13 +47,11 @@ def hbs(size):
     while size > power:
         size /= power
         raised_to_pow += 1
-    return str(round(size, 2)) + " " + dict_power_n[raised_to_pow] + "B"
-
+    return f"{round(size, 2)} {dict_power_n[raised_to_pow]}B"
 
 No_Flood = {}
 
-
-async def progress(current, total, event, start, type_of_ps, file=None):
+async def progress(current: int, total: int, event, start: float, type_of_ps: str, file=None):
     now = time.time()
     if No_Flood.get(event.chat_id):
         if No_Flood[event.chat_id].get(event.id):
@@ -90,5 +66,15 @@ async def progress(current, total, event, start, type_of_ps, file=None):
         percentage = current * 100 / total
         speed = current / diff
         time_to_completion = round((total - current) / speed) * 1000
-        progress_str = "`[{0}{1}] {2}%`\n\n".format(
-            "".join(["●" for i in range(math.floor(percentage / 
+        progress_str = f"[{'●' * math.floor(percentage / 5)}{'○' * (20 - math.floor(percentage / 5))}] {percentage:.2f}%\n\n"
+        progress_str += f"Processed: {hbs(current)} / {hbs(total)}\n"
+        progress_str += f"Speed: {hbs(speed)}/s\n"
+        progress_str += f"ETA: {ts(time_to_completion)}\n"
+        progress_str += f"Elapsed Time: {stdr(int(diff))}\n"
+        if type_of_ps == "uploading..":
+            progress_str += "Uploading..."
+        elif type_of_ps == "compressing..":
+            progress_str += "Compressing..."
+        await event.edit(progress_str)
+
+async def download_file(client: TelegramClient, location: TypeLocation, out: BinaryIO
