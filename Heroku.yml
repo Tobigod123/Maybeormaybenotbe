@@ -1,27 +1,21 @@
 
 build:
-  docker:
-    worker: Dockerfile
-    web: Dockerfile.web
-    services:
-      - postgres
-      - redis
-
-run:
-  worker: bash run.sh
-  web: gunicorn myapp.wsgi --bind 0.0.0.0:$PORT
+  config:
+    PYTHONUNBUFFERED: 1
+    TZ: UTC
+  stack: container
+  buildpacks:
+    - url: heroku/python
+    - url: https://github.com/jonathanong/heroku-buildpack-ffmpeg.git
+    - url: https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git
+  addons:
+    - heroku-postgresql
 
 release:
-  image:
-    web: worker
   command:
-    - python compress.py --input videos/input.mp4 --output compressed/output.mp4 --quality high
-  attach:
-    resource:
-      - type: dyno
-        name: worker
-        quantity: 1
-    app:
-      - type: dyno
-        name: web
-        quantity: 1
+    worker: python -m your_main_file
+
+formation:
+  worker:
+    quantity: 1
+    size: free
